@@ -30,7 +30,6 @@ export default function StumpPage() {
     setSelectedQuestionDifficulty(null);
   }, []);
 
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const modalContent = useMemo(() => {
     if (selectedCategory === null) {
       return null;
@@ -47,7 +46,7 @@ export default function StumpPage() {
               className="text-5xl! font-bold!"
               onClick={() => selectQuestionDifficulty("easyQuestion")}
             >
-              Легке
+              Просте
             </button>
             <button
               className="text-5xl! font-bold!"

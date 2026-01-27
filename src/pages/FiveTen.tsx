@@ -19,17 +19,17 @@ export default function FiveTenPage() {
 
   return (
     <div>
-      <h1 className="text-center">
+      <h1 className="text-center mb-60!">
         Раунд "П'яте - деcяте". Вам потрібно за десять секунд назвати п'ять
         чогось."
       </h1>
 
-      <ul className="flex flex-wrap gap-6">
+      <ul className="grid grid-cols-[repeat(8,100px)] grid-rows-2 gap-6 justify-self-center">
         {data.map((_, index) => (
           <li
             key={index}
             className={`
-              shrink-0 w-[100px] h-[100px] border-2 border-white
+              shrink-0 justify-self-center w-25 h-25 border-2 border-white
               flex items-center justify-center text-5xl font-bold cursor-pointer
               ${passedCategories.includes(index) ? "opacity-10" : "opacity-100"}
             `}

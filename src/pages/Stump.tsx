@@ -80,13 +80,13 @@ export default function StumpPage() {
         Складне - 2 бали.
       </h1>
 
-      <ul className="flex flex-wrap gap-7 justify-center">
+      <ul className="grid grid-cols-4 grid-rows-2 gap-10 content-center max-w-350 mx-auto">
         {data.map((item, index) => (
           <li
             key={index}
             className={`
-              flex text-center items-center justify-center mb-10 text-3xl
-              font-bold border border-white rounded-lg px-6 py-4 w-75 cursor-pointer hover:bg-gray-800
+              flex text-center items-center justify-center text-3xl
+              font-bold border border-white rounded-lg px-6 py-4 cursor-pointer hover:bg-gray-800
               ${passedCategories.includes(index) ? "opacity-10" : "opacity-100"}
             `}
             onClick={() => selectCategory(index)}

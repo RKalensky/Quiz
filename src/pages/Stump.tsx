@@ -86,7 +86,7 @@ export default function StumpPage() {
             key={index}
             className={`
               flex text-center items-center justify-center mb-10 text-3xl
-              font-bold border border-white rounded-lg px-6 py-4 w-75
+              font-bold border border-white rounded-lg px-6 py-4 w-75 cursor-pointer hover:bg-gray-800
               ${passedCategories.includes(index) ? "opacity-10" : "opacity-100"}
             `}
             onClick={() => selectCategory(index)}

@@ -43,7 +43,7 @@ export default function FiveTenPage() {
       <Modal
         isOpen={selectedCategory !== null}
         title={`Категорія № ${selectedCategory! + 1}:`}
-        children={<p className="text-7xl">{data[selectedCategory!]}</p>}
+        children={<p className="text-7xl">Назви 5 {data[selectedCategory!]}</p>}
         onClose={() => setSelectedCategory(null)}
       />
     </div>

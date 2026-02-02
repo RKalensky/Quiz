@@ -98,7 +98,7 @@ export default function StumpPage() {
       <Modal
         isOpen={selectedCategory !== null}
         title={`Категорія: ${data[selectedCategory!]?.category}`}
-        subTitle={data[selectedCategory!]?.description}
+        subTitle={data[selectedCategory!]?.agenda}
         children={modalContent}
         onClose={onModalClose}
       />

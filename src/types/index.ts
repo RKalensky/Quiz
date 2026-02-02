@@ -1,6 +1,6 @@
 export interface Stump {
   category: string;
-  description: string;
+  agenda: string;
   easyQuestion: string;
   hardQuestion: string;
 }

@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
 
-export default () => {
+const HomeLink = () => {
   return (
     <div className="fixed bottom-[25px] right-[25px]">
       <NavLink to="/">
@@ -9,3 +9,5 @@ export default () => {
     </div>
   );
 };
+
+export default HomeLink;

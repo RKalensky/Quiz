@@ -30,7 +30,7 @@ export default function FiveTenPage() {
             key={index}
             className={`
               shrink-0 justify-self-center w-25 h-25 border-2 border-white
-              flex items-center justify-center text-5xl font-bold cursor-pointer
+              flex items-center justify-center text-5xl font-bold cursor-pointer hover:bg-gray-800
               ${passedCategories.includes(index) ? "opacity-10" : "opacity-100"}
             `}
             onClick={() => selectCategory(index)}

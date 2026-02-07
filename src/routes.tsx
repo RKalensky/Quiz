@@ -2,19 +2,10 @@ import { createBrowserRouter } from "react-router";
 import StumpComponent from "./pages/Stump";
 import FourForFortyComponent from "./pages/FourForForty";
 import FiveTenComponent from "./pages/FiveTen";
-import GoHome from "./components/GoHome";
+import WithHomeLink from "./components/WithHomeLink";
 import Intro from "./pages/Intro";
 import game from "./config/game.json";
 import type { FiveTen, FourForForty, Stump } from "./types";
-
-const WithHomeLink = (Component: React.ComponentType) => {
-  return () => (
-    <div>
-      <GoHome />
-      <Component />
-    </div>
-  );
-};
 
 export const router = createBrowserRouter([
   {

@@ -1,29 +1,24 @@
 import { NavLink } from "react-router";
+import { ACTIVITIES, hasActivityData } from "../config/activities";
 
 export default () => {
+  const activities = ACTIVITIES.filter((a) => hasActivityData(a.key));
+
   return (
     <div>
       <h1>
-        Інтерактивна вікторина. Потрібно поділитися на дві команди. Гра
-        складається з чотирьох раундів. В кожному учасники можуть отримати бали.
-        В кінці буде приз, той, що ніхто собі ніколи не купить.
+        Інтерактивна вікторина. Потрібно поділитися на дві команди. В кожному
+        раунді учасники можуть отримати бали. В кінці буде приз, той, що ніхто
+        собі ніколи не купить.
       </h1>
 
-      <nav className="flex gap-6">
-        <NavLink to="/stump">
-          <button>Підстава</button>
-        </NavLink>
-        <NavLink to="/five-ten">
-          <button>П'яте-десяте</button>
-        </NavLink>
-        <NavLink to="/four-for-forty">
-          <button>Чотири за сорок</button>
-        </NavLink>
+      <nav className="flex gap-6 flex-wrap">
+        {activities.map((a) => (
+          <NavLink key={a.path} to={a.path}>
+            <button>{a.label}</button>
+          </NavLink>
+        ))}
       </nav>
-
-      <p className="absolute bottom-[40px] text-2xl">
-        Note: Усі спірні відповіді будуть перевірятися чатом ГПТ.
-      </p>
     </div>
   );
 };

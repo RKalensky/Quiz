@@ -1,36 +1,25 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useLoaderData } from "react-router";
-import { QRCodeSVG } from "qrcode.react";
-import type { Player, Room, WhoAmIQuestion } from "../types";
-import { useRoomState } from "../hooks/useRoomState";
-import { isLocalhostUrl, resolveBaseUrl } from "../lib/baseUrl";
+import type { WhoAmIQuestion } from "../types";
+import { useHostRoom } from "../hooks/useHostRoom";
+import { resolveBaseUrl } from "../lib/baseUrl";
+import Lobby from "../components/Lobby";
 import {
   buzzOrder,
   characterOf,
-  createRoom,
   goToNextCharacter,
   hintOf,
   HINTS_PER_CHARACTER,
   revealNextHint,
-  startGame,
+  startGame
 } from "../lib/whoami";
 import Modal from "../components/Modal.tsx";
 
 export default function WhoAmIHost() {
   const characters = useLoaderData() as WhoAmIQuestion[];
-  const [room, setRoom] = useState<Room | null>(null);
+  const { room, live, state } = useHostRoom();
   const [showCharacter, setShowCharacter] = useState<boolean>(false);
-  const createdRef = useRef(false);
 
-  // Create the room exactly once (guard against StrictMode double-invoke).
-  useEffect(() => {
-    if (createdRef.current) return;
-    createdRef.current = true;
-    void createRoom().then(setRoom);
-  }, []);
-
-  const state = useRoomState(room?.id ?? null);
-  const live = state.room ?? room;
   // question_index encodes both the character and the current hint.
   const qIndex = live?.question_index ?? 0;
   const charIndex = characterOf(qIndex);
@@ -67,40 +56,12 @@ export default function WhoAmIHost() {
 
       {/* ── Lobby ─────────────────────────────────────────────────────── */}
       {live.phase === "lobby" && (
-        <div className="text-center">
-          <p className="text-4xl mb-6">Зайди з телефону та скануй QR:</p>
-          <p className="text-9xl font-bold tracking-widest mb-8">{live.code}</p>
-          <div className="inline-block bg-white p-4 rounded-lg mb-10">
-            <QRCodeSVG value={joinUrl} size={260} />
-          </div>
-          {isLocalhostUrl(joinUrl) && (
-            <p className="text-2xl text-red-400 mb-6 max-w-2xl mx-auto">
-              ⚠ QR вказує на localhost — телефони його не відкриють. Відкрий цей
-              екран через Network-URL (напр. http://192.168.x.x:5173) або задай
-              VITE_PUBLIC_BASE_URL.
-            </p>
-          )}
-          <p className="text-3xl mb-6">
-            Гравців: <strong>{state.players.length}</strong>
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center mb-10 text-2xl">
-            {state.players.map((p: Player) => (
-              <span
-                key={p.id}
-                className="border border-white rounded-lg px-4 py-2"
-              >
-                {p.name}
-              </span>
-            ))}
-          </div>
-          <button
-            className="text-4xl! font-bold!"
-            disabled={state.players.length === 0}
-            onClick={() => startGame(room!.id)}
-          >
-            Почати гру
-          </button>
-        </div>
+        <Lobby
+          code={live.code}
+          joinUrl={joinUrl}
+          players={state.players}
+          onStart={() => startGame(room!.id)}
+        />
       )}
 
       {/* ── Playing ───────────────────────────────────────────────────── */}

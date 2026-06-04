@@ -1,81 +1,22 @@
-import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useMemo } from "react";
 import { useRoomState } from "../hooks/useRoomState";
-import { buzz, joinRoom } from "../lib/whoami";
-
-interface Session {
-  roomId: string;
-  playerId: string;
-  name: string;
-}
-
-function loadSession(code: string): Session | null {
-  const raw = localStorage.getItem(`whoami:${code.toUpperCase()}`);
-  return raw ? (JSON.parse(raw) as Session) : null;
-}
-
-function JoinForm({ onJoined }: { onJoined: (code: string, s: Session) => void }) {
-  const [params] = useSearchParams();
-  const [code, setCode] = useState((params.get("code") ?? "").toUpperCase());
-  const [name, setName] = useState("");
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  const submit = async () => {
-    if (!code.trim() || !name.trim()) return;
-    setBusy(true);
-    setError("");
-    try {
-      const { room, player } = await joinRoom(code, name);
-      onJoined(room.code, { roomId: room.id, playerId: player.id, name: player.name });
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Не вдалося приєднатися");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <div className="max-w-md mx-auto text-center">
-      <h1 className="text-4xl! mb-8!">Хто я?</h1>
-      <input
-        className="w-full text-3xl text-center p-3 mb-4 rounded-lg bg-gray-900 border border-white tracking-widest uppercase"
-        value={code}
-        onChange={(e) => setCode(e.target.value.toUpperCase())}
-        placeholder="КОД"
-        maxLength={4}
-      />
-      <input
-        className="w-full text-2xl p-3 mb-4 rounded-lg bg-gray-900 border border-white"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Твоє ім'я"
-      />
-      {error && <p className="text-red-400 mb-4">{error}</p>}
-      <button
-        className="w-full text-2xl! font-bold!"
-        disabled={busy || !code.trim() || !name.trim()}
-        onClick={submit}
-      >
-        Приєднатися
-      </button>
-    </div>
-  );
-}
+import PhoneClient from "../components/PhoneClient";
+import type { Session } from "../lib/session";
+import { buzz } from "../lib/whoami";
 
 function Buzzer({ session }: { session: Session }) {
   const state = useRoomState(session.roomId);
   const room = state.room;
-  const index = room?.question_index ?? 0;
+  // question_index encodes character+hint, so it changes on every new hint —
+  // recomputing myBuzz against it clears (unlocks) the button each time.
+  const qIndex = room?.question_index ?? 0;
 
-  // My buzz for the current character, if any. Recomputed (→ cleared) whenever
-  // the host advances to the next character.
   const myBuzz = useMemo(
     () =>
       state.answers.find(
-        (a) => a.question_index === index && a.player_id === session.playerId,
+        (a) => a.question_index === qIndex && a.player_id === session.playerId,
       ),
-    [state.answers, index, session.playerId],
+    [state.answers, qIndex, session.playerId],
   );
 
   if (!state.ready || !room) {
@@ -83,7 +24,7 @@ function Buzzer({ session }: { session: Session }) {
   }
 
   const press = async () => {
-    await buzz(session.roomId, index, session.playerId);
+    await buzz(session.roomId, qIndex, session.playerId);
   };
 
   return (
@@ -112,16 +53,9 @@ function Buzzer({ session }: { session: Session }) {
 }
 
 export default function WhoAmIPlay() {
-  const [params] = useSearchParams();
-  const urlCode = (params.get("code") ?? "").toUpperCase();
-  const [session, setSession] = useState<Session | null>(() =>
-    urlCode ? loadSession(urlCode) : null,
+  return (
+    <PhoneClient title="Хто я?" namespace="whoami">
+      {(session) => <Buzzer session={session} />}
+    </PhoneClient>
   );
-
-  const onJoined = (code: string, s: Session) => {
-    localStorage.setItem(`whoami:${code}`, JSON.stringify(s));
-    setSession(s);
-  };
-
-  return session ? <Buzzer session={session} /> : <JoinForm onJoined={onJoined} />;
 }

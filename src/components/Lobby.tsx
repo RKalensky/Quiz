@@ -19,15 +19,15 @@ export default function Lobby({
 }) {
   return (
     <div className="text-center">
-      <p className="text-4xl mb-6">Зайди з телефону та скануй QR:</p>
+      <p className="text-4xl mb-6">Відскануй QR</p>
       <p className="text-9xl font-bold tracking-widest mb-8">{code}</p>
       <div className="inline-block bg-white p-4 rounded-lg mb-10">
         <QRCodeSVG value={joinUrl} size={260} />
       </div>
       {isLocalhostUrl(joinUrl) && (
         <p className="text-2xl text-red-400 mb-6 max-w-2xl mx-auto">
-          ⚠ QR вказує на localhost — телефони його не відкриють. Відкрий цей екран
-          через Network-URL (напр. http://192.168.x.x:5173) або задай
+          ⚠ QR вказує на localhost — телефони його не відкриють. Відкрий цей
+          екран через Network-URL (напр. http://192.168.x.x:5173) або задай
           VITE_PUBLIC_BASE_URL.
         </p>
       )}

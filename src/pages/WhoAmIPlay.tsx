@@ -42,10 +42,10 @@ function Buzzer({ session }: { session: Session }) {
           </p>
         ) : (
           <button
-            className="w-full text-5xl! font-bold! py-16! rounded-3xl!"
+            className="w-full h-[70vh] text-5xl! font-bold! py-16! rounded-3xl!"
             onClick={press}
           >
-            Це я!
+            Buzzer
           </button>
         ))}
     </div>

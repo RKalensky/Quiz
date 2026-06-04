@@ -15,6 +15,7 @@ export const ACTIVITIES: ActivityMeta[] = [
   { key: "fiveTen", path: "/five-ten", label: "П'яте-десяте" },
   { key: "FourForForty", path: "/four-for-forty", label: "Чотири за сорок" },
   { key: "variants", path: "/variants", label: "Варіанти" },
+  { key: "whoami", path: "/whoami", label: "Хто я?" },
 ];
 
 /**

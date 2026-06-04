@@ -19,12 +19,24 @@ export interface VariantQuestion {
   answer: string;
 }
 
+// ── Activity "Хто я?" (buzzer guessing) ───────────────────────────────────
+
+/** A character revealed through five clues, ordered hardest → easiest. */
+export interface WhoAmIQuestion {
+  /** The secret character (host reference only — never the screen headline). */
+  character: string;
+  /** Five hints from the most cryptic to the most obvious. */
+  hints: string[];
+}
+
 export type RoomPhase =
   | "lobby"
   | "answering"
   | "reveal"
   | "voting"
-  | "results";
+  | "results"
+  // "Хто я?" only ever uses lobby → playing.
+  | "playing";
 
 export type AnswerKind = "player" | "host" | "correct";
 
@@ -49,6 +61,8 @@ export interface Answer {
   player_id: string | null;
   text: string;
   kind: AnswerKind;
+  /** Set by the DB; used by "Хто я?" to order buzzes by press time. */
+  created_at?: string;
 }
 
 export interface Vote {

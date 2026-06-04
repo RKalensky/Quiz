@@ -3,30 +3,17 @@ import { useLoaderData } from "react-router";
 import { QRCodeSVG } from "qrcode.react";
 import type { Player, Room, VariantQuestion } from "../types";
 import { useRoomState } from "../hooks/useRoomState";
-import { ANSWER_SECONDS, buildOptions, createRoom, goToQuestion, revealAnswers, setPhase, tallyVotes, toStored } from "../lib/variants";
-
-/**
- * The address phones should open, embedded into the join QR code. Phones can't
- * reach the host's `localhost`, so prefer VITE_PUBLIC_BASE_URL when set. The
- * value is forgiving: a bare host like "192.168.0.10" gets the current page's
- * protocol and port filled in (→ "http://192.168.0.10:5173").
- */
-function resolveBaseUrl(): string {
-  const raw = (
-    import.meta.env.VITE_PUBLIC_BASE_URL as string | undefined
-  )?.trim();
-  if (!raw) return window.location.origin;
-  const withScheme = /^https?:\/\//.test(raw)
-    ? raw
-    : `${window.location.protocol}//${raw}`;
-  try {
-    const u = new URL(withScheme);
-    if (!u.port && window.location.port) u.port = window.location.port;
-    return u.origin;
-  } catch {
-    return window.location.origin;
-  }
-}
+import { isLocalhostUrl, resolveBaseUrl } from "../lib/baseUrl";
+import {
+  ANSWER_SECONDS,
+  buildOptions,
+  createRoom,
+  goToQuestion,
+  revealAnswers,
+  setPhase,
+  tallyVotes,
+  toStored,
+} from "../lib/variants";
 
 function Scoreboard({ players }: { players: Player[] }) {
   const ranked = [...players].sort((a, b) => b.score - a.score);
@@ -138,14 +125,12 @@ export default function VariantsHost() {
       {/* ── Lobby ─────────────────────────────────────────────────────── */}
       {live.phase === "lobby" && (
         <div className="text-center">
-          <p className="text-4xl mb-6">
-            Зайди з телефону та введи код, або скануй QR:
-          </p>
+          <p className="text-4xl mb-6">Зайди з телефону та скануй QR:</p>
           <p className="text-9xl font-bold tracking-widest mb-8">{live.code}</p>
           <div className="inline-block bg-white p-4 rounded-lg mb-10">
             <QRCodeSVG value={joinUrl} size={260} />
           </div>
-          {/^https?:\/\/(localhost|127\.0\.0\.1)/.test(joinUrl) && (
+          {isLocalhostUrl(joinUrl) && (
             <p className="text-2xl text-red-400 mb-6 max-w-2xl mx-auto">
               ⚠ QR вказує на localhost — телефони його не відкриють. Відкрий цей
               екран через Network-URL (напр. http://192.168.x.x:5173) або задай

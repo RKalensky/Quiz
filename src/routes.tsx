@@ -6,8 +6,10 @@ import WithHomeLink from "./components/WithHomeLink";
 import Intro from "./pages/Intro";
 import VariantsHost from "./pages/VariantsHost";
 import VariantsPlay from "./pages/VariantsPlay";
+import WhoAmIHost from "./pages/WhoAmIHost";
+import WhoAmIPlay from "./pages/WhoAmIPlay";
 import { getActivityData } from "./config/activities";
-import type { FiveTen, FourForForty, Stump, VariantQuestion } from "./types";
+import type { FiveTen, FourForForty, Stump, VariantQuestion, WhoAmIQuestion } from "./types";
 
 // Loader that returns the activity's data, or redirects home if game.json has
 // no data for it (key removed or empty) — so disabled activities can't be
@@ -48,5 +50,14 @@ export const router = createBrowserRouter([
   {
     path: "/play",
     Component: VariantsPlay,
+  },
+  {
+    path: "/whoami",
+    Component: WithHomeLink(WhoAmIHost),
+    loader: requireActivity<WhoAmIQuestion[]>("whoami"),
+  },
+  {
+    path: "/buzz",
+    Component: WhoAmIPlay,
   },
 ]);
